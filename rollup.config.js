@@ -1,14 +1,16 @@
 import { terser } from "rollup-plugin-terser";
 import copy from "rollup-plugin-copy";
 
+const enableSourceMap = true
+
 export default [{
   input: 'src/mathlive.js',
   plugins: [
     terser({
-      sourcemap: false,
+      sourcemap: enableSourceMap,
       compress: {
-          drop_console: true,
-          drop_debugger: true,
+          drop_console: !enableSourceMap,
+          drop_debugger: !enableSourceMap,
           ecma: 8,
           module: true,
           warnings: true,
@@ -26,13 +28,13 @@ export default [{
   output: [
     {
       // JavaScript native module
-      sourcemap: false,
+      sourcemap: enableSourceMap,
       file: 'dist/mathlive.mjs',
       format: 'es',
     },
     {
       // UMD file, suitable for <script>, require(), etc...
-      sourcemap: false,
+      sourcemap: enableSourceMap,
       file: 'dist/mathlive.js',
       format: 'umd',
       name: 'MathLive'
@@ -42,7 +44,7 @@ export default [{
 {
   input: 'src/vue-mathlive.js',
   plugins: [terser({
-      sourcemap: false,
+      sourcemap: enableSourceMap,
       compress: {
           drop_console: true,
           drop_debugger: true,
@@ -55,7 +57,7 @@ export default [{
   output:
     {
       // JavaScript native module
-      sourcemap: false,
+      sourcemap: enableSourceMap,
       file: 'dist/vue-mathlive.mjs',
       format: 'es'
     }

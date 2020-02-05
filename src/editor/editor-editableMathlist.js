@@ -275,7 +275,7 @@ EditableMathlist.prototype.setPath = function(selection, extent) {
         this.path = newPath;
         if (extent === 0 && this.anchor().type === "placeholder") {
             // select the placeholder
-            newPath[newPath.length - 1].offset -= 1;
+            newPath[newPath.length - 1].offset = this.anchorOffset() - 1;
             extent = 1;
         }
         selection = {
@@ -1650,6 +1650,27 @@ EditableMathlist.prototype.previous = function(options) {
 EditableMathlist.prototype.move = function(dist, options) {
     options = options || { extend: false };
     const extend = options.extend || false;
+    const originalDist = dist;
+
+    const siblings = this.siblings();
+    let isPlaceHolder = false;
+    if (siblings.length > this.anchorOffset() + 1) {
+        const nextAnchor = siblings[this.anchorOffset() + 1];
+        if (nextAnchor.type === "placeholder") {
+            isPlaceHolder = true;
+        }
+    }
+    const currentAnchor = this.anchor();
+    if (currentAnchor.type === "placeholder") {
+        isPlaceHolder = true;
+    }
+    if (isPlaceHolder) {
+        if (originalDist > 0) {
+            dist++;
+        } else if (originalDist < 0) {
+            dist--;
+        }
+    }
 
     this.removeSuggestion();
 
@@ -1675,6 +1696,19 @@ EditableMathlist.prototype.move = function(dist, options) {
             }
         }
 
+        const siblings = this.siblings();
+        if (originalDist > 0) {
+            if (siblings.length > this.anchorOffset() + 1) {
+                const nextAnchor = siblings[this.anchorOffset() + 1];
+                if (nextAnchor.type === "placeholder") {
+                    this.setSelection(this.anchorOffset(), 1);
+                }
+            }
+        } else if (originalDist < 0) {
+            if (this.anchor().type === "placeholder") {
+                this.setSelection(this.anchorOffset() - 1, 1);
+            }
+        }
         // ** @todo: can't do that without updating the path.
         // If the siblings list we left was empty, remove the relation
         // if (previousSiblings.length <= 1) {
