@@ -1,4 +1,3 @@
-
 /**
  * This modules handles low-level keyboard events and normalize them across
  * browsers.
@@ -10,89 +9,89 @@
 // be mapped to the coresponding virtual keys (they could be shifted keys on
 // international keyboards)
 const INTL_KEY = {
-    '#':            '#',
-    '|':            '|',
-    '[':            'BracketLeft',
-    ']':            'BracketRight',
-    '-':            'Minus',
-    '+':            'Plus',
-    '=':            'Equal',
-    '/':            'Slash',
-    '\\':           'Backslash',
-}
-
-const KEY_NAMES = {
-    'Space':        'Spacebar',
-    ' ':            'Spacebar',
-    'Escape':       'Esc',
-    'ArrowLeft':    'Left',
-    'ArrowUp':      'Up',
-    'ArrowRight':   'Right',
-    'ArrowDown':    'Down',
-    'Delete':       'Del'
+    '#': '#',
+    '|': '|',
+    '[': 'BracketLeft',
+    ']': 'BracketRight',
+    '-': 'Minus',
+    '+': 'Plus',
+    '=': 'Equal',
+    '/': 'Slash',
+    '\\': 'Backslash',
 };
 
-  const VIRTUAL_KEY_NAMES = {
-      'q'           : 'KeyQ',
-      'w'           : 'KeyW',
-      'e'           : 'KeyE',
-      'r'           : 'KeyR',
-      't'           : 'KeyT',
-      'y'           : 'KeyY',
-      'u'           : 'KeyU',
-      'i'           : 'KeyI',
-      'o'           : 'KeyO',
-      'p'           : 'KeyP',
-      'a'           : 'KeyA',
-      's'           : 'KeyS',
-      'd'           : 'KeyD',
-      'f'           : 'KeyF',
-      'g'           : 'KeyG',
-      'h'           : 'KeyH',
-      'j'           : 'KeyJ',
-      'k'           : 'KeyK',
-      'l'           : 'KeyL',
-      'z'           : 'KeyZ',
-      'x'           : 'KeyX',
-      'c'           : 'KeyC',
-      'v'           : 'KeyV',
-      'b'           : 'KeyB',
-      'n'           : 'KeyN',
-      'm'           : 'KeyM',
+const KEY_NAMES = {
+    Space: 'Spacebar',
+    ' ': 'Spacebar',
+    Escape: 'Esc',
+    ArrowLeft: 'Left',
+    ArrowUp: 'Up',
+    ArrowRight: 'Right',
+    ArrowDown: 'Down',
+    Delete: 'Del',
+};
 
-      '1'           : 'Digit1',
-      '2'           : 'Digit2',
-      '3'           : 'Digit3',
-      '4'           : 'Digit4',
-      '5'           : 'Digit5',
-      '6'           : 'Digit6',
-      '7'           : 'Digit7',
-      '8'           : 'Digit8',
-      '9'           : 'Digit9',
-      '0'           : 'Digit0',
+const VIRTUAL_KEY_NAMES = {
+    q: 'KeyQ',
+    w: 'KeyW',
+    e: 'KeyE',
+    r: 'KeyR',
+    t: 'KeyT',
+    y: 'KeyY',
+    u: 'KeyU',
+    i: 'KeyI',
+    o: 'KeyO',
+    p: 'KeyP',
+    a: 'KeyA',
+    s: 'KeyS',
+    d: 'KeyD',
+    f: 'KeyF',
+    g: 'KeyG',
+    h: 'KeyH',
+    j: 'KeyJ',
+    k: 'KeyK',
+    l: 'KeyL',
+    z: 'KeyZ',
+    x: 'KeyX',
+    c: 'KeyC',
+    v: 'KeyV',
+    b: 'KeyB',
+    n: 'KeyN',
+    m: 'KeyM',
 
-      '!'           : 'Shift-Digit1',
-      '@'           : 'Shift-Digit2',
-      '#'           : 'Shift-Digit3',
-      '$'           : 'Shift-Digit4',
-      '%'           : 'Shift-Digit5',
-      '^'           : 'Shift-Digit6',
-      '&'           : 'Shift-Digit7',
-      '*'           : 'Shift-Digit8',
-      '('           : 'Shift-Digit9',
-      ')'           : 'Shift-Digit0',
+    '1': 'Digit1',
+    '2': 'Digit2',
+    '3': 'Digit3',
+    '4': 'Digit4',
+    '5': 'Digit5',
+    '6': 'Digit6',
+    '7': 'Digit7',
+    '8': 'Digit8',
+    '9': 'Digit9',
+    '0': 'Digit0',
 
-      '-'           : 'Minus',
-      '_'           : 'Shift-Minus',
+    '!': 'Shift-Digit1',
+    '@': 'Shift-Digit2',
+    '#': 'Shift-Digit3',
+    $: 'Shift-Digit4',
+    '%': 'Shift-Digit5',
+    '^': 'Shift-Digit6',
+    '&': 'Shift-Digit7',
+    '*': 'Shift-Digit8',
+    '(': 'Shift-Digit9',
+    ')': 'Shift-Digit0',
 
-      '/'           : 'Slash',
-      '\\'          : 'Backslash',  // Some virtual keyboards (iOS) return '\' as the event.key
-                                    // with no evt.code
-      '|'           : 'Shift-Backslash',
-      '?'           : 'Shift-Slash',
+    '-': 'Minus',
+    _: 'Shift-Minus',
 
-      ' '           : 'Spacebar'
-  };
+    '/': 'Slash',
+    '\\': 'Backslash', // Some virtual keyboards (iOS) return '\' as the event.key
+    // with no evt.code
+    '|': 'Shift-Backslash',
+    '?': 'Shift-Slash',
+
+    ' ': 'Spacebar',
+};
 
 /**
  *
@@ -133,7 +132,7 @@ function keyboardEventToString(evt) {
         // to undefined. In that case, map the virtual key ("q") to a
         // pseudo-hardware key ("KeyQ")
         if (!keyname) {
-            keyname = VIRTUAL_KEY_NAMES[evt.key.toLowerCase()] || evt.key;
+            keyname = VIRTUAL_KEY_NAMES[evt.key.toLowerCase()];
         }
     }
 
@@ -154,8 +153,7 @@ function keyboardEventToString(evt) {
     modifiers.push(keyname);
 
     return modifiers.join('-');
-  }
-
+}
 
 /**
  * Setup to capture the keyboard events from a `TextArea` and redispatch them to
@@ -219,10 +217,13 @@ function delegateKeyboardEvents(textarea, handlers) {
     }
 
     function onKeydown(e) {
-        const allowDeadKey = typeof handlers.allowDeadKey === 'function' &&
+        const allowDeadKey =
+            typeof handlers.allowDeadKey === 'function' &&
             handlers.allowDeadKey();
-        if (!allowDeadKey &&
-            ((e.key === 'Dead' || e.key === 'Unidentified') || e.keyCode === 229)) {
+        if (
+            !allowDeadKey &&
+            (e.key === 'Dead' || e.key === 'Unidentified' || e.keyCode === 229)
+        ) {
             deadKey = true;
             compositionInProgress = false;
             // This sequence seems to cancel dead keys
@@ -238,9 +239,11 @@ function delegateKeyboardEvents(textarea, handlers) {
         } else {
             deadKey = false;
         }
-        if (!compositionInProgress &&
+        if (
+            !compositionInProgress &&
             e.code !== 'CapsLock' &&
-            !/(Control|Meta|Alt|Shift)(Right|Left)/.test(e.code)) {
+            !/(Control|Meta|Alt|Shift)(Right|Left)/.test(e.code)
+        ) {
             keydownEvent = e;
             keypressEvent = null;
             return handlers.keystroke(keyboardEventToString(e), e);
@@ -253,7 +256,10 @@ function delegateKeyboardEvents(textarea, handlers) {
         // if this is a repeated keystroke, call the keystroke handler.
         if (!compositionInProgress) {
             if (keydownEvent && keypressEvent) {
-                handlers.keystroke(keyboardEventToString(keydownEvent), keydownEvent);
+                handlers.keystroke(
+                    keyboardEventToString(keydownEvent),
+                    keydownEvent
+                );
             }
 
             keypressEvent = e;
@@ -262,7 +268,7 @@ function delegateKeyboardEvents(textarea, handlers) {
     }
 
     function onKeyup() {
-       // If we've received a keydown, but no keypress, check what's in the
+        // If we've received a keydown, but no keypress, check what's in the
         // textarea field.
         if (!compositionInProgress && keydownEvent && !keypressEvent) {
             handleTypedText();
@@ -307,10 +313,21 @@ function delegateKeyboardEvents(textarea, handlers) {
     target.addEventListener('cut', onCut, true);
     target.addEventListener('blur', onBlur, true);
     target.addEventListener('focus', onFocus, true);
-    target.addEventListener('compositionstart',
-        () => { compositionInProgress = true }, true);
-    target.addEventListener('compositionend',
-        () => { compositionInProgress = false; defer(handleTypedText); }, true);
+    target.addEventListener(
+        'compositionstart',
+        () => {
+            compositionInProgress = true;
+        },
+        true
+    );
+    target.addEventListener(
+        'compositionend',
+        () => {
+            compositionInProgress = false;
+            defer(handleTypedText);
+        },
+        true
+    );
 
     // The `input` handler gets called when the field is changed, for example
     // with input methods or emoji input...
@@ -331,13 +348,11 @@ function delegateKeyboardEvents(textarea, handlers) {
             defer(handleTypedText);
         }
     });
-
 }
 
 function hasSelection(textarea) {
     return textarea.selectionStart !== textarea.selectionEnd;
 }
-
 
 function eventToChar(evt) {
     if (!evt) return '';
@@ -350,7 +365,11 @@ function eventToChar(evt) {
         }
     }
     result = result || evt.key || evt.code;
-    if (/^(Return|Enter|Tab|Escape|Delete|PageUp|PageDown|Home|End|Help|ArrowLeft|ArrowRight|ArrowUp|ArrowDown)$/.test(result)) {
+    if (
+        /^(Return|Enter|Tab|Escape|Delete|PageUp|PageDown|Home|End|Help|ArrowLeft|ArrowRight|ArrowUp|ArrowDown)$/.test(
+            result
+        )
+    ) {
         result = '';
     }
     return result;
@@ -362,7 +381,7 @@ function charToEvent(c) {
         metaKey: false,
         ctrlKey: false,
         altKey: false,
-        shiftKey: false
+        shiftKey: false,
     };
 
     return result;
@@ -373,8 +392,5 @@ export default {
     select: delegateKeyboardEvents.select,
     keyboardEventToString,
     eventToChar,
-    charToEvent
+    charToEvent,
 };
-
-
-

@@ -38,6 +38,7 @@ declare type MathFieldCallback = (mathfield: MathField) => void;
  @property {boolean} keypressVibration?
  @property {string} keypressSound?
  @property {string} plonkSound?
+ @property {boolean} readOnly?
  @property {"mathlive" | "sre"} textToSpeechRules?
  @property {"ssml" | "mac"} textToSpeechMarkup?
  @property {object} textToSpeechRulesOptions?
@@ -99,6 +100,7 @@ declare type MathFieldConfig = {
     keypressVibration?: boolean;
     keypressSound?: string;
     plonkSound?: string;
+    readOnly?: boolean;
     textToSpeechRules?: "mathlive" | "sre";
     textToSpeechMarkup?: "ssml" | "mac";
     textToSpeechRulesOptions?: any;
@@ -456,9 +458,18 @@ declare class MathField {
      * @param {"text" | "math" | ""} options.mode - If empty, the current mode
      * is used (default)
      *
+     * @param {object} options.style
+     *
      * @param {boolean} options.resetStyle - If true, the style after the insertion
      * is the same as the style before. If false, the style after the
      * insertion is the style of the last inserted atom.
+     *
+     * @param {boolean} options.smartFence - If true, promote plain fences, e.g. `(`,
+     * as `\left...\right` or `\mleft...\mright`
+     *
+     * @param {boolean} options.suppressChangeNotifications - If true, the
+     * handlers for the contentWillChange, contentDidChange, selectionWillChange and
+     * selectionDidChange notifications will not be invoked. Default `false`.
      *
      * @category Changing the Content
      * @method MathField#$insert
@@ -470,7 +481,10 @@ declare class MathField {
         focus: boolean;
         feedback: boolean;
         mode: "text" | "math" | "";
+        style: any;
         resetStyle: boolean;
+        smartFence: boolean;
+        suppressChangeNotifications: boolean;
     }): void;
     /**
      * Updates the style (color, bold, italic, etc...) of the selection or sets
@@ -779,7 +793,7 @@ declare module "mathlive" {
      * used at the begining of repeating digits. **Default** = `"\\overline{"`
      * @param {string} [options.endRepeatingDigits='}'] The string
      * used at the end of repeating digits. **Default** = `"}"`
-    *
+     *
      * @return {string} The LaTeX representation of the Abstract Syntax Tree, if valid.
      * @category Converting
      * @function module:mathlive#astToLatex
