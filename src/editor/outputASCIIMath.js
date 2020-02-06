@@ -1,42 +1,42 @@
 const SPECIAL_IDENTIFIERS = {
-    '\u2212':       '-',  // MINUS SIGN
-    '-':            '-',
-    '\\alpha':      'alpha',
-    '\\beta':       'beta',
-    '\\gamma':      'gamma',
-    '\\delta':      'delta',
-    '\\epsilon':    'epsilon',
+    '\u2212': '-', // MINUS SIGN
+    '-': '-',
+    '\\alpha': 'alpha',
+    '\\beta': 'beta',
+    '\\gamma': 'gamma',
+    '\\delta': 'delta',
+    '\\epsilon': 'epsilon',
     '\\varepsilon': 'varepsilon',
-    '\\zeta':       'zeta',
-    '\\eta':        'eta',
-    '\\theta':      'theta',
-    '\\vartheta':   'vartheta',
-    '\\iota':       'iota',
-    '\\kappa':      'kappa',
-    '\\lambda':     'lambda',
-    '\\mu':         'mu',
-    '\\nu':         'nu',
-    '\\xi':         'xi',
-    '\\pi':         'pi',
-    '\\rho':        'rho',
-    '\\sigma':      'sigma',
-    '\\tau':        'tau',
-    '\\upsilon':    'upsilon',
-    '\\phi':        'phi',
-    '\\varphi':     'varphi',
-    '\\chi':        'chi',
-    '\\psi':        'psi',
-    '\\omega':      'omega',
-    '\\Gamma':      'Gamma',
-    '\\Delta':      'Delta',
-    '\\Theta':      'Theta',
-    '\\Lambda':     'Lambda',
-    '\\Xi':         'Xi',
-    '\\Pi':         'Pi',
-    '\\Sigma':      'Sigma',
-    '\\Phi':        'Phi',
-    '\\Psi':        'Psi',
-    '\\Omega':      'Omega',
+    '\\zeta': 'zeta',
+    '\\eta': 'eta',
+    '\\theta': 'theta',
+    '\\vartheta': 'vartheta',
+    '\\iota': 'iota',
+    '\\kappa': 'kappa',
+    '\\lambda': 'lambda',
+    '\\mu': 'mu',
+    '\\nu': 'nu',
+    '\\xi': 'xi',
+    '\\pi': 'pi',
+    '\\rho': 'rho',
+    '\\sigma': 'sigma',
+    '\\tau': 'tau',
+    '\\upsilon': 'upsilon',
+    '\\phi': 'phi',
+    '\\varphi': 'varphi',
+    '\\chi': 'chi',
+    '\\psi': 'psi',
+    '\\omega': 'omega',
+    '\\Gamma': 'Gamma',
+    '\\Delta': 'Delta',
+    '\\Theta': 'Theta',
+    '\\Lambda': 'Lambda',
+    '\\Xi': 'Xi',
+    '\\Pi': 'Pi',
+    '\\Sigma': 'Sigma',
+    '\\Phi': 'Phi',
+    '\\Psi': 'Psi',
+    '\\Omega': 'Omega',
 };
 
 const SPECIAL_OPERATORS = {
@@ -67,7 +67,7 @@ const SPECIAL_OPERATORS = {
     // '\\hat': '&#x005e;'
 };
 
-export function toASCIIMath(atom, options){
+export function toASCIIMath(atom, options) {
     if (!atom) return '';
     if (Array.isArray(atom)) {
         let result = '';
@@ -94,14 +94,14 @@ export function toASCIIMath(atom, options){
     }
 
     if (atom.mode === 'text') {
-        return '"' + atom.body + '"';   // text -- add in (ASCII) quotes
+        return '"' + atom.body + '"'; // text -- add in (ASCII) quotes
     }
 
     let result = '';
     const command = atom.latex ? atom.latex.trim() : null;
     let m;
 
-    switch(atom.type) {
+    switch (atom.type) {
         case 'group':
         case 'root':
             result = toASCIIMath(atom.body, options);
@@ -112,7 +112,10 @@ export function toASCIIMath(atom, options){
 
         case 'genfrac':
             if (atom.leftDelim || atom.rightDelim) {
-                result += (atom.leftDelim === '.' || !atom.leftDelim) ? '{:' : atom.leftDelim;
+                result +=
+                    atom.leftDelim === '.' || !atom.leftDelim
+                        ? '{:'
+                        : atom.leftDelim;
             }
             if (atom.hasBarLine) {
                 result += '(';
@@ -126,30 +129,42 @@ export function toASCIIMath(atom, options){
                 result += '(' + toASCIIMath(atom.denom, options) + ')';
             }
             if (atom.leftDelim || atom.rightDelim) {
-                result += (atom.rightDelim === '.' || !atom.rightDelim) ? '{:' : atom.rightDelim;
+                result +=
+                    atom.rightDelim === '.' || !atom.rightDelim
+                        ? '{:'
+                        : atom.rightDelim;
             }
-        break;
+            break;
 
         case 'surd':
             if (atom.index) {
-                result += 'root(' + toASCIIMath(atom.index, options) + ')(' +
-                     toASCIIMath(atom.body, options) + ')';
+                result +=
+                    'root(' +
+                    toASCIIMath(atom.index, options) +
+                    ')(' +
+                    toASCIIMath(atom.body, options) +
+                    ')';
             } else {
                 result += 'sqrt(' + toASCIIMath(atom.body, options) + ')';
             }
             break;
 
         case 'leftright':
-            result += (atom.leftDelim === '.' || !atom.leftDelim) ? '{:' : atom.leftDelim;
+            result +=
+                atom.leftDelim === '.' || !atom.leftDelim
+                    ? '{:'
+                    : atom.leftDelim;
             result += toASCIIMath(atom.body, options);
-            result += (atom.rightDelim === '.' || !atom.rightDelim) ? '{:' : atom.rightDelim;
+            result +=
+                atom.rightDelim === '.' || !atom.rightDelim
+                    ? '{:'
+                    : atom.rightDelim;
             break;
 
         case 'sizeddelim':
         case 'delim':
             // result += '<mo separator="true"' + makeID(atom.id, options) + '>' + (SPECIAL_OPERATORS[atom.delim] || atom.delim) + '</mo>';
             break;
-
 
         case 'accent':
             break;
@@ -159,18 +174,21 @@ export function toASCIIMath(atom, options){
             break;
 
         case 'overunder':
-
             break;
 
         case 'mord':
             // @todo, deal with some special identifiers: \alpha, etc...
-            result = SPECIAL_IDENTIFIERS[command] || command ||
+            result =
+                SPECIAL_IDENTIFIERS[command] ||
+                command ||
                 (typeof atom.body === 'string' ? atom.body : '');
             if (result[0] === '\\') result += '';
-            m = command ? command.match(/[{]?\\char"([0-9abcdefABCDEF]*)[}]?/) : null;
+            m = command
+                ? command.match(/[{]?\\char"([0-9abcdefABCDEF]*)[}]?/)
+                : null;
             if (m) {
                 // It's a \char command
-                result = String.fromCharCode(parseInt('0x' + m[1]))
+                result = String.fromCharCode(parseInt('0x' + m[1]));
             } else if (result.length > 0 && result.charAt(0) === '\\') {
                 // atom is an identifier with no special handling. Use the
                 // Unicode value
@@ -211,7 +229,7 @@ export function toASCIIMath(atom, options){
                 // Not ZERO-WIDTH
                 result = '';
                 if (command === '\\operatorname') {
-                    result += atom.body;
+                    result += toASCIIMath(atom.body, options);
                 } else {
                     result += atom.body || command;
                 }
@@ -232,16 +250,15 @@ export function toASCIIMath(atom, options){
             break;
 
         case 'space':
-            result = ' '
+            result = ' ';
             break;
-
     }
     // Subscripts before superscripts (according to the ASCIIMath spec)
     if (atom.subscript) {
         result += '_';
         const arg = toASCIIMath(atom.subscript, options);
         if (arg.length > 1 && !/^(-)?\d+(\.\d*)?$/.test(arg)) {
-            result += '(' + arg + ')'
+            result += '(' + arg + ')';
         } else {
             result += arg;
         }
@@ -251,7 +268,7 @@ export function toASCIIMath(atom, options){
         result += '^';
         const arg = toASCIIMath(atom.superscript, options);
         if (arg.length > 1 && !/^(-)?\d+(\.\d*)?$/.test(arg)) {
-            result += '(' + arg + ')'
+            result += '(' + arg + ')';
         } else {
             result += arg;
         }
@@ -261,5 +278,5 @@ export function toASCIIMath(atom, options){
 }
 
 export default {
-    toASCIIMath
-}
+    toASCIIMath,
+};

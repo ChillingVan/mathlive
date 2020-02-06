@@ -1,3 +1,28 @@
+## 0.34 (Feb 5, 2020)
+
+### Bug Fixes
+
+-   Fix #364: Some expressions containing placeholders, when inserted, would not have the placeholder selected. For example, when using the "differentialD" key in the virtual keyboard.
+-   Fix #349:
+    -   'latex-expanded' format no longer returns `\mleft` and `\mright`. This
+        format is intended for inter-exchange with other TeX-compatible renderers
+        and the `\mleft` and `\mright` commands are not widely deployed.
+    -   The content exported to the clipboard is now surrounded by `$$` to more
+        clearly indicate that the content is using TeX format.
+    -   When pasting content that begins/ends with `$` or `$$`, assume LaTeX format
+-   Fix keyboard shortcuts, e.g. "alt+(" or "alt+v"
+-   Fix #354: The argument of `\operatorname` is of type 'math', not 'text'. This means that using the '\text' command inside the argument is valid and that spaces should be ignored by default (but the `~` character can be used to insert a space in that context).
+-   Fix #282: Some keys from the virtual keyboards ('e', 'i') produce an incorrect input.
+-   Fix #227: An operator (`\sin`) following some text is incorrectly considered
+    to be part of the text.
+
+### Features / Improvements
+
+-   Documented `suppressChangeNotifications` options for `$insert()`
+-   Document `config.smartMode` (#312)
+-   The 'surd' (root) and 'leftright' (fences) elements now change color when the caret is inside their body. This helps distinguish the case where the caret position may be ambiguous, for example when it is either after the last element of the body of a 'surd' or the first element after the 'surd'.
+-   #339: Read-only mode. Set the mode to read-only with `mf.$setConfig({readOnly: true})`. When this mode is activated, the formula can be selected (so it can be copied), but it cannot be modified by the user. Progammatic modification is still possible.
+
 ## 0.33 (December 16, 2019)
 
 ### Bug Fixes
@@ -224,7 +249,7 @@ Now, a shortcut can be defined with some pre-conditions. It is still possible to
 
 ```javascript
 config.inlineShortcuts = {
-    in: "\\in"
+    in: '\\in',
 };
 ```
 
@@ -233,10 +258,10 @@ However, a shortcut can now be specified with an object:
 ```javascript
 config.inlineShortcuts = {
     in: {
-        mode: "math",
-        after: "space+letter+digit+symbol+fence",
-        value: "\\in"
-    }
+        mode: 'math',
+        after: 'space+letter+digit+symbol+fence',
+        value: '\\in',
+    },
 };
 ```
 
@@ -292,7 +317,7 @@ The `'after'` key, if present, indicate in what context the shortcut should appl
     -   `[TAB]`: accept suggestion and enter it
     -   `[RETURN]`: enter characters typed so far, ignoring any suggestion.
 -   #132: Support for smart fence with `{}`, and `\langle`.
--   Pressing the spacebar next to a closing smartfence will close it. Useful
+-   Pressing the spacebar next to a closing smartFence will close it. Useful
     for semi-open fences.
 -   Improved rendering performance by 8%
 -   Updated SRE support
@@ -383,10 +408,10 @@ The `'after'` key, if present, indicate in what context the shortcut should appl
     argument of the handlers now refers to the mathfield to which it applies.
 
 ```javascript
-MathLive.makeMathField("input", {
+MathLive.makeMathField('input', {
     onContentDidChange: mf => {
-        document.getElementById("output").innerHTML = mf.latex();
-    }
+        document.getElementById('output').innerHTML = mf.latex();
+    },
 });
 ```
 
@@ -427,7 +452,7 @@ but it is recommended to use native JavaScript modules:
 
 ```html
 <script type="module">
-    import MathLive from "../../dist/mathlive.mjs";
+    import MathLive from '../../dist/mathlive.mjs';
 </script>
 ```
 
@@ -462,7 +487,7 @@ Instead of:
 use:
 
 ```javascript
-import MathLive from "../../dist/src/mathlive.js";
+import MathLive from '../../dist/src/mathlive.js';
 MathLive.makeMathField(/*...*/);
 ```
 
