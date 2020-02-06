@@ -1647,24 +1647,45 @@ EditableMathlist.prototype.previous = function(options) {
     }
 };
 
+function isSelectingPlaceHolder(mathList) {
+    const siblings = mathList.siblings();
+    let isSelectingPlaceHolder = false;
+    if (siblings.length > mathList.anchorOffset() + 1) {
+        const nextAnchor = siblings[mathList.anchorOffset() + 1];
+        if (nextAnchor.type === "placeholder") {
+            isSelectingPlaceHolder = true;
+        }
+    }
+    const currentAnchor = mathList.anchor();
+    if (currentAnchor.type === "placeholder") {
+        isSelectingPlaceHolder = true;
+    }
+    return isSelectingPlaceHolder;
+}
+
+function selectPlaceHolderWhenMove(mathList, moveDistance) {
+    const siblings = mathList.siblings();
+    if (moveDistance > 0) {
+        if (siblings.length > mathList.anchorOffset() + 1) {
+            const nextAnchor = siblings[mathList.anchorOffset() + 1];
+            if (nextAnchor.type === "placeholder") {
+                mathList.setSelection(mathList.anchorOffset(), 1);
+            }
+        }
+    } else if (moveDistance < 0) {
+        if (mathList.anchor().type === "placeholder") {
+            mathList.setSelection(mathList.anchorOffset() - 1, 1);
+        }
+    }
+}
+
 EditableMathlist.prototype.move = function(dist, options) {
     options = options || { extend: false };
     const extend = options.extend || false;
     const originalDist = dist;
 
-    const siblings = this.siblings();
-    let isPlaceHolder = false;
-    if (siblings.length > this.anchorOffset() + 1) {
-        const nextAnchor = siblings[this.anchorOffset() + 1];
-        if (nextAnchor.type === "placeholder") {
-            isPlaceHolder = true;
-        }
-    }
-    const currentAnchor = this.anchor();
-    if (currentAnchor.type === "placeholder") {
-        isPlaceHolder = true;
-    }
-    if (isPlaceHolder) {
+    if (isSelectingPlaceHolder(this)) {
+        // If selecting place holder, move twice to get out of the placeholder.
         if (originalDist > 0) {
             dist++;
         } else if (originalDist < 0) {
@@ -1696,19 +1717,8 @@ EditableMathlist.prototype.move = function(dist, options) {
             }
         }
 
-        const siblings = this.siblings();
-        if (originalDist > 0) {
-            if (siblings.length > this.anchorOffset() + 1) {
-                const nextAnchor = siblings[this.anchorOffset() + 1];
-                if (nextAnchor.type === "placeholder") {
-                    this.setSelection(this.anchorOffset(), 1);
-                }
-            }
-        } else if (originalDist < 0) {
-            if (this.anchor().type === "placeholder") {
-                this.setSelection(this.anchorOffset() - 1, 1);
-            }
-        }
+        // Select the placeholder when move into placeholder
+        selectPlaceHolderWhenMove(this, originalDist);
         // ** @todo: can't do that without updating the path.
         // If the siblings list we left was empty, remove the relation
         // if (previousSiblings.length <= 1) {
