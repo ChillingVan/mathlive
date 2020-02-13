@@ -1672,6 +1672,8 @@ class MathAtom {
         const supsubContainer = makeSpan(supsub, 'msubsup');
         if (this.caret) {
             supsubContainer.caret = this.caret;
+            // If the supsub caret is in a group, the caret will be duplicated, so remove the outside caret.
+            this.caret = '';
         }
         return Span.makeSpanOfType(type, [nucleus, supsubContainer]);
     }
