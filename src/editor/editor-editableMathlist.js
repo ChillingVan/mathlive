@@ -1648,19 +1648,57 @@ EditableMathlist.prototype.previous = function(options) {
 };
 
 function isSelectingPlaceHolder(mathList) {
-    const siblings = mathList.siblings();
     let isSelectingPlaceHolder = false;
+    if (diffDistanceOfPlaceHolderAndAnchor(mathList) >= 0) {
+        isSelectingPlaceHolder = true;
+    }
+    return isSelectingPlaceHolder;
+}
+
+function diffDistanceOfPlaceHolderAndAnchor(mathList) {
+    const siblings = mathList.siblings();
+    let distance = -1;
     if (siblings.length > mathList.anchorOffset() + 1) {
         const nextAnchor = siblings[mathList.anchorOffset() + 1];
         if (nextAnchor.type === "placeholder") {
-            isSelectingPlaceHolder = true;
+            distance = 1
         }
     }
     const currentAnchor = mathList.anchor();
     if (currentAnchor.type === "placeholder") {
-        isSelectingPlaceHolder = true;
+        distance = 0
     }
-    return isSelectingPlaceHolder;
+    return distance;
+}
+
+/**
+ * Only called when isSelectingPlaceholder = true. Check whether current placeholder is at the edge
+ */
+function isGoingToEdgeWhenSelectingPlaceholder(mathList, moveDistance) {
+    let result = false;
+    // distance must >= 0 because this is called when isSelectingPlaceholder = true
+    const distance = diffDistanceOfPlaceHolderAndAnchor(mathList);
+    if (moveDistance > 0) {
+        const siblings = mathList.siblings();
+        // Check whether the next one is nothing, that is, whether curent placeholder is the last one.
+        if (siblings.length <= mathList.anchorOffset() + 1 + distance && mathList.parent().type === 'root') {
+            result = true;
+        }
+    } else if (moveDistance < 0) {
+        const anchorOffset = mathList.anchorOffset()
+        const previousAnchorIndex = anchorOffset + (distance - 1);
+        if (previousAnchorIndex >= 0) {
+            const siblings = mathList.siblings();
+            const previousAnchor = siblings[previousAnchorIndex];
+            // Check if the previous one is 'first'
+            if (previousAnchor.type === 'first' && mathList.parent().type === 'root') {
+                result = true;
+            }
+        }
+    }
+
+    console.log('isGoingToEdge result=' + result);
+    return result;
 }
 
 function selectPlaceHolderWhenMove(mathList, moveDistance) {
@@ -1685,11 +1723,11 @@ EditableMathlist.prototype.move = function(dist, options) {
     const originalDist = dist;
 
     if (isSelectingPlaceHolder(this)) {
-        // If selecting place holder, move twice to get out of the placeholder.
+        // If selecting place holder, move twice to get out of the placeholder or do not move when at the edge.
         if (originalDist > 0) {
-            dist++;
+            dist += isGoingToEdgeWhenSelectingPlaceholder(this, originalDist) ? -1 : 1;
         } else if (originalDist < 0) {
-            dist--;
+            dist -= isGoingToEdgeWhenSelectingPlaceholder(this, originalDist) ? -1 : 1;
         }
     }
 
