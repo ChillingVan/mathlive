@@ -1,7 +1,7 @@
 import { terser } from 'rollup-plugin-terser';
 import copy from 'rollup-plugin-copy';
 
-const enableSourceMap = true
+const enableSourceMap = false
 export default [
     {
         input: 'src/mathlive.js',

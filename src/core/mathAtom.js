@@ -1508,7 +1508,10 @@ class MathAtom {
                 result.classes += ' ML__suggestion';
             }
         } else if (this.type === 'placeholder') {
-            result = this.makeSpan(context, '⬚');
+            // This is changed from ⬚ to hair width space.
+            // Zero space width will affect the height.
+            // The dotted square is applied in mathlive.less with after content
+            result = this.makeSpan(context, '\u200a');
         } else if (this.type === 'first') {
             // the `first` pseudo-type is used as a placeholder as
             // the first element in a children list. This makes

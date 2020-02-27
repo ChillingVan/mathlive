@@ -203,7 +203,8 @@ EditableMathlist.prototype.adjustPlaceholder = function() {
             placeholder = 'annotation';
         }
         if (placeholder) {
-            // ◌ ⬚
+            // This is changed from ⬚ to zero width space.
+            // The dotted square is applied in mathlive.less with after content
             const placeholderAtom = [
                 new MathAtom.MathAtom(
                     'math',
